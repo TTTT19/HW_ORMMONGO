@@ -39,22 +39,19 @@ def find_by_name(name, db):
     и вернуть их по возрастанию цены
     """
     regex = re.compile(re.escape(name))
-    find_by_name_result = []
     # ('укажите регулярное выражение для поиска. ' \'Обратите внимание, что в строке могут быть специальные символы, их нужно экранировать')
-    for new in db.find().sort('Цена', ASCENDING):
-        match = re.search(regex, new['Исполнитель'])
-        if match:
-            find_by_name_result.append(new)
-    if len(find_by_name_result) > 0:
-        print(f'найденные результаты по возрастанию цены:')
-        for result in find_by_name_result:
-            print(result)
+
+    if (db.count_documents({'Исполнитель': regex}))>0:
+        print('Найденные билеты по имени исполнителя по возрастанию цены:')
+        for new in db.find({'Исполнитель': regex}).sort('Цена', ASCENDING):
+            print(new)
     else:
-        print('Записи не найдены.')
+        print('Исполнители не найдены')
+
 
 
 if __name__ == '__main__':
     print("Функция - отсортировать билеты по возрастанию цены")
     find_cheapest(concerts_collection)
     print("Функция - поиск билеты по исполнителю по возрастанию цены")
-    find_by_name('Seconds to', concerts_collection)
+    find_by_name('а', concerts_collection)
